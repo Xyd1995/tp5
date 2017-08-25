@@ -8,14 +8,17 @@
 // +----------------------------------------------------------------------
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
-
+use think\Route;
+//API 请求方式 为参数传入的方式
+Route::rule(':version/:id','api/:version/read');
+Route::resource('news','api/news');
 return [
-    '__pattern__' => [
-        'name' => '\w+',
-    ],
-    '[hello]'     => [
-        ':id'   => ['index/hello', ['method' => 'get'], ['id' => '\d+']],
-        ':name' => ['index/hello', ['method' => 'post']],
-    ],
-
+	//路由规则		路由到index控制器index方法 
+	'__pattern__' => [
+	'id' => '\d+',
+	],
+	'admin/index' => 'admin/news/index',
+	'admin/create' => 'admin/news/create',
+	'admin/newsAdd' => 'admin/news/newsadd',
+	'admin/newsDelete' => 'admin/news/newsDelete',
 ];

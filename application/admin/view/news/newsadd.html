@@ -1,0 +1,142 @@
+<link href="__PUBLIC__/lib/webuploader/0.1.5/webuploader.css" rel="stylesheet" type="text/css" />
+<section class="Hui-article-box" style="overflow:auto">
+	<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 新闻管理 <span class="c-gray en">&gt;</span> 添加新闻 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+	<div class="page-container">
+	<form method="post" action="" enctype="multipart/form-data" class="form form-horizontal" id="newsAdd">
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>新闻标题：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input name="newsTitle" type="text" class="input-text" value="" placeholder="" required>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>所属栏目：</label>
+			<div class="formControls col-xs-8 col-sm-9"> <span class="select-box">
+				<select name="newsLanMu" class="select" title="必须选择一个栏目" required>
+					<option value=""></option>
+					<option value="News">News</option>
+				</select>
+				</span> </div>
+		</div>		
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>作者：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" name="newsAuthor" id="" placeholder="" value="" class="input-text" required>
+			</div>
+		</div>		
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>新闻时间：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+			<input type="text" name="newsTimer" id="countTimestart" onfocus="selecttime(1)" value="{$start_time}" size="17" class="date" required>				
+		</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>新闻简要：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<textarea name="newsIntroduction" cols="" rows="" class="textarea"  placeholder="" required></textarea>
+				<p class="textarea-numberbar"><em class="textarea-length">0</em>/200</p>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">缩略图：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<div class="uploader-thum-container">
+					<input type="file" class="file" name="file"><br/>
+				</div>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">详细内容：</label>
+			<div class="formControls col-xs-8 col-sm-9"> 
+				<script id="editor" name="newsMain" type="text/plain" style="width:100%;height:400px;"></script> 
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">是否推荐：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="checkbox" class="checked" name="newsTuiJian"/>
+			</div>
+		</div>
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+				<button class="btn btn-primary radius" type="submit"><i class="Hui-iconfont">&#xe632;</i>保存上传</button>
+				<button id="tess" class="btn btn-secondary radius" type="button"><i class="Hui-iconfont">&#xe632;</i>存为草稿</button>
+				<button id="tt" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+			</div>
+		</div>
+	</form>
+	</div>
+</section>
+<script type="text/javascript" src="__PUBLIC__/lib/My97DatePicker/4.8/WdatePicker.js"></script> 
+<script type="text/javascript" src="__PUBLIC__/lib/jquery.validation/1.14.0/jquery.validate.js"></script> 
+<script type="text/javascript" src="__PUBLIC__/lib/jquery.validation/1.14.0/validate-methods.js"></script> 
+<script type="text/javascript" src="__PUBLIC__/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+<script type="text/javascript" src="__PUBLIC__/lib/ueditor/1.4.3/ueditor.config.js"></script> 
+<script type="text/javascript" src="__PUBLIC__/lib/ueditor/1.4.3/ueditor.all.min.js"> </script> 
+<script type="text/javascript" src="__PUBLIC__/lib/ueditor/1.4.3/lang/zh-cn/zh-cn.js"></script>
+<script type="text/javascript">
+
+(function( $ ){
+    // 当domReady的时候开始初始化
+
+})( jQuery );
+
+$(function(){
+	//实例百度编辑器
+	var ue = UE.getEditor('editor');
+	ue.ready(function(){
+		//jquery.validation表单验证加载
+		$().ready(function(){
+			var html = ue.getContent();			
+			$("#newsAdd").validate({
+				//jquery.validation表单验证提交事件 修改为ajax方法
+				submitHandler: function(form){
+					//判断checked 是否选择
+					var isChecked;
+					if($('.checked').is(":checked")){
+						isChecked = 1;
+					}else{
+						isChecked = 0;
+					}
+		      		$(form).ajaxSubmit({
+		      			type:'POST',
+		      			url:"{:url('/admin/newsAdd')}",
+		      			data: {newsChecked:isChecked},
+		      			success: function(data){
+		      				alert(data.msg);
+		      				if(data.code==1){
+		      					setTimeout(function(){
+		      						window.location.href="{:url('/admin/index')}"
+		      					},2000)
+		      				}
+		      				
+		      			},
+		      			error: function(error){
+		      				return '新建错误';
+		      				console.log(error);
+		      			}
+		      		});
+		      		return false;
+					form.submit();
+		   		}
+			});
+})
+	})
+});
+//	时间插件解决 使用js加载 解决冲突问题
+	function selecttime (flag){
+    if(flag==1){
+        var endTime = $("#countTimeend").val();
+        if(endTime != ""){
+            WdatePicker({dateFmt:'yyyy-MM-dd HH:mm',maxDate:endTime})}else{
+            WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})}
+    }else{
+        var startTime = $("#countTimestart").val();
+        if(startTime != ""){
+            WdatePicker({dateFmt:'yyyy-MM-dd HH:mm',minDate:startTime})}else{
+            WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})}
+    }
+ };
+</script>
+<script>
+</script>
